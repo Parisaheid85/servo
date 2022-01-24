@@ -10,9 +10,39 @@
 </head>
 
 <body>
-    <h1>Servo :)</h1>
+    <section class="main-container">
 
-    <div id="map"></div>
+        <div id="left-sidebar">
+            <h3>Spotlight</h3>
+
+            <h3>Stats</h3>
+            <p>Total Stations: [number] </p>
+
+            <h3>Breakdown by Owners</h3>
+            <p>Caltex [number]</p>
+            <p>Caltex [number]</p>
+            <p>Caltex [number]</p>
+            <p>Caltex [number]</p>
+            <p>Caltex [number]</p>
+            <p>Caltex [number]</p>
+            <p>Caltex [number]</p>
+            <p>Caltex [number]</p>
+
+        </div>
+        
+        <div id="map"></div>
+
+        <div id="right-sidebar">
+            <h3>Current Location</h3>
+
+            <input type="text"></input>
+            <input type="text"></input>
+
+            <h3>Address: [address goes here] </h3>
+            
+        </div>
+
+    </section>
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <script src="https://maps.googleapis.com/maps/api/js?key=yourgoogleapikey&callback=initMap" async></script>
     <script src="./javascript/map.js"></script>
