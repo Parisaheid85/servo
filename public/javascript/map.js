@@ -1,6 +1,3 @@
-// this doesn't link and gives reference error for now
-const servo = require('../../models/servo.js')
-
 let map;
 
 function initMap() {
@@ -21,8 +18,23 @@ function getMapBounds() {
     botLat: mapBoundaries.getSouthWest().lat(),
     botLng: mapBoundaries.getSouthWest().lng()
   }
-  let petrolStations = servo.getPetrolStations(coordinatesObject);
-  addMarkers(petrolStations);
+  fetch('http://localhost:8080/api/stations/nearest', {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(coordinatesObject),
+    method: "POST",
+  })
+    .then(res => {
+      return res.json()
+    })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log("RIP", err)
+    });
 }
 
 function getVisibleMapCoordinates() {
