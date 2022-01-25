@@ -2,7 +2,8 @@ const express = require('express');
 const res = require('express/lib/response');
 const app = express();
 const _ = require('underscore');
-const servo = require('./models/servo.js')
+const random = require('./models/random.js');
+const servo = require('./models/servo.js');
 
 const { Pool } = require('pg')
 const pool = new Pool({ database: 'servo' });
@@ -32,11 +33,25 @@ app.get('/api/stations/all', (req, res) => {
     
 // })
 
-app.get('/api/:owners', (req, res) => {
-    let sql = `SELECT * FROM petrolStations WHERE owner = '${req.params.owners}' LIMIT 100;`
+app.get('/api/owners', (req, res) => {
+    let sql = `SELECT DISTINCT owner FROM petrolStations;`
     pool.query(sql, (err, dbRes) => {
         res.json(dbRes.rows);
     })
+});
+
+app.get('/api/stations/random', (req, res) => {
+    let randomId = random.randomNumber()
+    let sql = `SELECT * FROM petrolStations WHERE objectid = ${randomId}`;
+    pool.query(sql, (err, dbRes) => {
+        res.json(dbRes.rows)
+    })
+});
+
+app.post('/api/stations/nearest', (req, res) => {
+    const coordinates = req.body;
+    servo.getPetrolStations(coordinates);
+    res.send({success: true})
 })
 
 app.listen(8080, () => {
