@@ -1,19 +1,27 @@
 let map;
 
+function myLocation(pos) {
+  var currentLocation = pos.coords;
+  map.setCenter({lat: currentLocation.latitude, lng: currentLocation.longitude})
+}
+
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: -34.397, lng: 150.644 },
+    center: {lat: -33.856125088797576, lng: 151.2154039883525},
     zoom: 13,
   });
-  map.addListener("dragend", addMarkers);
-  map.addListener("zoom_changed", addMarkers);
+  navigator.geolocation.getCurrentPosition(myLocation);
+  map.setOptions({ minZoom: 11, maxZoom: 13 });
+  map.addListener('idle', addMarkers);
+  map.addListener('zoom_changed', addMarkers);
 }
+
 
 function getVisibleMapCoordinates() {
   return map.getBounds();
 }
 
-function addMarkers(petrolStations) {
+function addMarkers() {
   let mapBoundaries = getVisibleMapCoordinates();
   let coordinatesObject = {
     topLat: mapBoundaries.getNorthEast().lat(),
