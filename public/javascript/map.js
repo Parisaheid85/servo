@@ -7,6 +7,7 @@ function initMap() {
   });
   map.addListener('dragend', getMapBounds)
   map.addListener('zoom_changed', getMapBounds)
+  addMarkers()
 }
 
 function getMapBounds() {
@@ -43,6 +44,23 @@ function getVisibleMapCoordinates() {
 
 function addMarkers(petrolStations) {
   console.log(petrolStations)
+  axios.get('/api/stations/all')
+    .then(res => {
+      results = res.data
+      console.log(results)
+
+      // Loop through the results array and place a marker for each
+      // set of coordinates.
+
+      for (let i = 0; i < results.length; i++) {
+        const latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+
+        new google.maps.Marker({
+          position: latLng,
+          map: map,
+        });
+      }
+    })
 }
 // eventListeners - dragend zoom_changed DONE BB
 // Get map bound values from viewport on change (maybe radius from map centre)
