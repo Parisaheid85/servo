@@ -8,8 +8,6 @@ const servo = require('./models/servo.js');
 const { Pool } = require('pg')
 const pool = new Pool({ database: 'servo' });
 
-const cors = require('cors');
-app.use(cors());
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -30,7 +28,7 @@ app.get('/api/stations/all', (req, res) => {
 })
 
 // app.get('/api/stats', (req, res) => {
-    
+
 // })
 
 app.get('/api/owners', (req, res) => {
@@ -51,7 +49,14 @@ app.get('/api/stations/random', (req, res) => {
 app.post('/api/stations/nearest', (req, res) => {
     const coordinates = req.body;
     servo.getPetrolStations(coordinates);
-    res.send({success: true})
+    res.send({ success: true })
+})
+
+app.get('/api/stations/stats', (req, res) => {
+    let sql = 'SELECT owner, count(*) FROM petrolStations GROUP BY owner ORDER BY count DESC;';
+    pool.query(sql, (err, dbRes) => {
+        res.json(dbRes.rows)
+    })
 })
 
 app.listen(8080, () => {
