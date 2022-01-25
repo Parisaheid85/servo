@@ -54,6 +54,13 @@ app.post('/api/stations/nearest', (req, res) => {
     res.send({success: true})
 })
 
+app.get('/api/stations/stats' , (req,res) => {
+    let sql = 'SELECT owner, count(*) FROM petrolStations GROUP BY owner ORDER BY count DESC;';
+    pool.query(sql, (err, dbRes) => {
+        res.json(dbRes.rows)
+    })
+})
+
 app.listen(8080, () => {
     console.log("Listening on port 8080");
 })
