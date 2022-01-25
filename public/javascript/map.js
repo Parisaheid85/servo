@@ -14,6 +14,7 @@ function initMap() {
   map.setOptions({ minZoom: 11, maxZoom: 13 });
   map.addListener('idle', addMarkers);
   map.addListener('zoom_changed', addMarkers);
+  getStats();
 }
 
 
@@ -35,7 +36,6 @@ function addMarkers() {
     )
     .then((res) => {
       results = res.data;
-      console.log(results);
       // Loop through the results array and place a marker for each set of coordinates.
       for (let i = 0; i < results.length; i++) {
         const latLng = new google.maps.LatLng(
@@ -62,6 +62,30 @@ function addMarkers() {
       }
     });
 }
+
+function getStats() {
+  axios.get('/api/stations/stats')
+    .then(res => {
+      let results = res.data // express middleware ALWAYS comes out as res.data
+      let ul = document.getElementById('ownerStats');
+      let totalByOwner = 0;
+      for(i = 0; i < results.length; i++) {
+          let li = document.createElement('li');
+          li.innerHTML = `${results[i].owner} - ${results[i].count}`;
+          if (`${results[i].count}` !== "1") {
+            ul.appendChild(li);
+            totalByOwner+= Number(results[i].count)
+          }
+      }
+      const totalStations = (
+        results
+          .map(result => Number(result.count))
+          .reduce((total, nextNum) => total + nextNum)
+        )
+      document.getElementById('totalStations').innerHTML = `Total Stations: ${totalStations}`;
+  })
+}
+
 
 // Get map bound values from viewport on change (maybe radius from map centre)
 // Pass results into function to make markers
