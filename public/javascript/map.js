@@ -5,37 +5,8 @@ function initMap() {
     center: { lat: -34.397, lng: 150.644 },
     zoom: 13,
   });
-  map.addListener('dragend', getMapBounds)
-  map.addListener('zoom_changed', getMapBounds)
-  addMarkers()
-}
-
-function getMapBounds() {
-  // get lat long by box or radius
-  let mapBoundaries = getVisibleMapCoordinates();
-  let coordinatesObject = {
-    topLat: mapBoundaries.getNorthEast().lat(),
-    topLng: mapBoundaries.getNorthEast().lng(),
-    botLat: mapBoundaries.getSouthWest().lat(),
-    botLng: mapBoundaries.getSouthWest().lng()
-  }
-  fetch('http://localhost:8080/api/stations/nearest', {
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(coordinatesObject),
-    method: "POST",
-  })
-    .then(res => {
-      return res.json()
-    })
-    .then(res => {
-      console.log(res)
-    })
-    .catch(err => {
-      console.log("RIP", err)
-    });
+  map.addListener('dragend', addMarkers)
+  map.addListener('zoom_changed', addMarkers)
 }
 
 function getVisibleMapCoordinates() {
@@ -43,18 +14,20 @@ function getVisibleMapCoordinates() {
 }
 
 function addMarkers(petrolStations) {
-  console.log(petrolStations)
-  axios.get('/api/stations/all')
+  let mapBoundaries = getVisibleMapCoordinates();
+  let coordinatesObject = {
+    topLat: mapBoundaries.getNorthEast().lat(),
+    topLng: mapBoundaries.getNorthEast().lng(),
+    botLat: mapBoundaries.getSouthWest().lat(),
+    botLng: mapBoundaries.getSouthWest().lng()
+  }
+  axios.get(`http://localhost:8080/api/stations/nearest?botLat=${coordinatesObject.botLat}&botLng=${coordinatesObject.botLng}&topLat=${coordinatesObject.topLat}&topLng=${coordinatesObject.topLng}`)
     .then(res => {
       results = res.data
       console.log(results)
-
-      // Loop through the results array and place a marker for each
-      // set of coordinates.
-
+      // Loop through the results array and place a marker for each set of coordinates.
       for (let i = 0; i < results.length; i++) {
         const latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
-
         new google.maps.Marker({
           position: latLng,
           map: map,
@@ -62,8 +35,7 @@ function addMarkers(petrolStations) {
       }
     })
 }
-// eventListeners - dragend zoom_changed DONE BB
+
 // Get map bound values from viewport on change (maybe radius from map centre)
-// Query map bounds lat /long to db
 // Pass results into function to make markers
 // Marker function should clear existing markers, add new
