@@ -46,10 +46,16 @@ app.get('/api/stations/random', (req, res) => {
     })
 });
 
-app.post('/api/stations/nearest', (req, res) => {
-    const coordinates = req.body;
-    servo.getPetrolStations(coordinates);
-    res.send({ success: true })
+app.get('/api/stations/nearest', (req, res) => {
+    const coordinates = { botLat: req.query.botLat, 
+                        botLng: req.query.botLng,
+                        topLat: req.query.topLat, 
+                        topLng: req.query.topLng }
+    const sql = servo.getPetrolStations(coordinates);
+    console.log(sql);
+    pool.query(sql, (err, dbRes) => {
+        res.json(dbRes.rows)
+    })
 })
 
 app.get('/api/stations/stats', (req, res) => {
