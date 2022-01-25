@@ -1,68 +1,92 @@
 let map;
 
-function myLocation(pos) {
-  var currentLocation = pos.coords;
-  map.setCenter({lat: currentLocation.latitude, lng: currentLocation.longitude})
-}
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: {lat: -33.856125088797576, lng: 151.2154039883525},
+    center: { lat: -34.397, lng: 150.644 },
     zoom: 13,
   });
-  navigator.geolocation.getCurrentPosition(myLocation);
-  map.setOptions({ minZoom: 11, maxZoom: 13 });
-  map.addListener('idle', addMarkers);
-  map.addListener('zoom_changed', addMarkers);
+  map.addListener('dragend', getMapBounds)
+  map.addListener('zoom_changed', getMapBounds)
+  addMarkers()
+  getStats()
 }
 
 
-function getVisibleMapCoordinates() {
-  return map.getBounds();
-}
-
-function addMarkers() {
+function getMapBounds() {
+  // get lat long by box or radius
   let mapBoundaries = getVisibleMapCoordinates();
   let coordinatesObject = {
     topLat: mapBoundaries.getNorthEast().lat(),
     topLng: mapBoundaries.getNorthEast().lng(),
     botLat: mapBoundaries.getSouthWest().lat(),
-    botLng: mapBoundaries.getSouthWest().lng(),
-  };
-  axios
-    .get(
-      `http://localhost:8080/api/stations/nearest?botLat=${coordinatesObject.botLat}&botLng=${coordinatesObject.botLng}&topLat=${coordinatesObject.topLat}&topLng=${coordinatesObject.topLng}`
-    )
-    .then((res) => {
-      results = res.data;
-      console.log(results);
-      // Loop through the results array and place a marker for each set of coordinates.
-      for (let i = 0; i < results.length; i++) {
-        const latLng = new google.maps.LatLng(
-          results[i].latitude,
-          results[i].longitude
-        );
-        const infowindow = new google.maps.InfoWindow({
-          content: `<h1>${results[i].owner} </h1> 
-          <h2> ${results[i].name}</h2>`,
-        });
-
-        const marker = new google.maps.Marker({
-          position: latLng,
-          map: map,
-        });
-
-        marker.addListener("click", () => {
-          infowindow.open({
-            anchor: marker,
-            map,
-            shouldFocus: false,
-          });
-        });
-      }
+    botLng: mapBoundaries.getSouthWest().lng()
+  }
+  fetch('http://localhost:8080/api/stations/nearest', {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(coordinatesObject),
+    method: "POST",
+  })
+    .then(res => {
+      return res.json()
+    })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log("RIP", err)
     });
 }
 
+function getVisibleMapCoordinates() {
+  return map.getBounds();
+}
+
+function addMarkers(petrolStations) {
+  console.log(petrolStations)
+  axios.get('/api/stations/all')
+    .then(res => {
+      results = res.data
+      console.log(results)
+
+      // Loop through the results array and place a marker for each
+      // set of coordinates.
+
+      for (let i = 0; i < results.length; i++) {
+        const latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+
+        new google.maps.Marker({
+          position: latLng,
+          map: map,
+        });
+      }
+    })
+}
+// eventListeners - dragend zoom_changed DONE BB
 // Get map bound values from viewport on change (maybe radius from map centre)
+// Query map bounds lat /long to db
 // Pass results into function to make markers
 // Marker function should clear existing markers, add new
+
+
+function getStats() {
+
+  axios.get('/api/stations/stats')
+    .then(res => {
+      let results = res.data // express middleware ALWAYS comes out as res.data
+      let ul = document.getElementById('ownerStats');
+      let total = 0;
+      for(i=0; i<results.length; i++) {
+          let li = document.createElement('li');
+          li.innerHTML = `${results[i].owner} - ${results[i].count}`;
+          if (`${results[i].count}` !== "1") {
+            ul.appendChild(li);
+            total+= Number(results[i].count)
+          }
+      }
+      document.getElementById('stationTotal').innerHTML = total;
+  })
+}
