@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swamp Donkey Servos</title>
-    <link rel="stylesheet" href="./stylesheets/style.css">
-</head>
-
-<body>
+   
+<%- include('layout.ejs'); %>
     <section class="main-container">
 
         <div id="left-sidebar">
@@ -46,9 +37,9 @@
 
     </section>
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script src="javascript/map.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="./javascript/map.js"></script>
-    <script src="./javascript/servo.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyi2xlb_La7r9QJ4SdT9Bju-ZH3kFCtdw&callback=initMap"
         async></script>
 </body>
