@@ -66,7 +66,7 @@ function addMarkers() {
 function getStats() {
   axios.get('/api/stations/stats')
     .then(res => {
-      let results = res.data // express middleware ALWAYS comes out as res.data
+      let results = res.data; // express middleware ALWAYS comes out as res.data
       let ul = document.getElementById('ownerStats');
       let totalByOwner = 0;
       for(i = 0; i < results.length; i++) {
@@ -84,6 +84,18 @@ function getStats() {
         )
       document.getElementById('totalStations').innerHTML = `Total Stations: ${totalStations}`;
   })
+  getSpotlight()
+}
+
+function getSpotlight() {
+  axios.get('/api/stations/random')
+       .then(res => {
+         let results = res.data;
+         let spotLink = document.getElementById('spotlightLink');
+         let spotOwner = document.getElementById('spotOwner');
+         spotLink.innerHTML = `${results[0].name}`;
+         spotOwner.innerHTML = `${results[0].owner}`;
+       })
 }
 
 
