@@ -12,6 +12,7 @@ function initMap() {
     disableDefaultUI: false,
   });
   navigator.geolocation.getCurrentPosition(myLocation);
+  map.setOptions({ minZoom: 11, maxZoom: 13 });
   map.addListener("idle", getPetrolStations);
   map.addListener("zoom_changed", getPetrolStations);
   getStats();
