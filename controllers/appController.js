@@ -10,52 +10,42 @@ router.get("/", (req, res) => {
 });
 
 //API DATA REQUESTS
-router.get("/api/stations/all", async (req, res, next) => {
-  try {
-    const result = await stations.getAllStations();
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
+router.get("/api/stations/all", (req, res) => {
+  const result = stations.getAllStations();
+  result.then((dbRes) => {
+    res.json(dbRes.rows);
+  });
 });
 
 //-> (DAVE) added station to the route as it was only pointing to owners which is an attribute of a station
 
-router.get("/api/stations/owners", async (req, res, next) => {
-  try {
-    const result = await stations.getUniqueOwners();
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
+router.get("/api/stations/owners", (req, res) => {
+  const result = stations.getUniqueOwners();
+  result.then((dbRes) => {
+    res.json(dbRes.rows);
+  });
 });
 
-router.get("/api/stations/randomStation", async (req, res, next) => {
-  try {
-    const result = await stations.getRandomStation();
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
+router.get("/api/stations/randomStation", (req, res) => {
+  const result = stations.getRandomStation();
+  result.then((dbRes) => {
+    res.json(dbRes.rows);
+  });
 });
 
 router.get("/api/stations/visible", async (req, res, next) => {
-  try {
-    const coordinates = { botLat: req.query.botLat, botLng: req.query.botLng, topLat: req.query.topLat, topLng: req.query.topLng };
-    const result = await stations.getVisibleStations(coordinates);
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
+  const coordinates = { botLat: req.query.botLat, botLng: req.query.botLng, topLat: req.query.topLat, topLng: req.query.topLng };
+  const result = stations.getVisibleStations(coordinates);
+  result.then((dbRes) => {
+    res.json(dbRes.rows);
+  });
 });
 
 router.get("/api/stations/stats", async (req, res, next) => {
-  try {
-    const result = await stations.getStats();
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
+  const result = stations.getStats();
+  result.then((dbRes) => {
+    res.json(dbRes.rows);
+  });
 });
 
 module.exports = router;
