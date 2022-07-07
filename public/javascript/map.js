@@ -2,7 +2,10 @@ let map;
 
 function myLocation(pos) {
   var currentLocation = pos.coords;
-  map.setCenter({ lat: currentLocation.latitude, lng: currentLocation.longitude });
+  map.setCenter({
+    lat: currentLocation.latitude,
+    lng: currentLocation.longitude,
+  });
 }
 
 function initMap() {
@@ -44,7 +47,10 @@ function addMarkers(locations) {
 
   const infowindow = new google.maps.InfoWindow();
   for (let i = 0; i < locations.length; i++) {
-    const latLng = new google.maps.LatLng(locations[i].latitude, locations[i].longitude);
+    const latLng = new google.maps.LatLng(
+      locations[i].latitude,
+      locations[i].longitude
+    );
     const marker = new google.maps.Marker({
       position: latLng,
       label: locations[i].owner[0],
@@ -79,10 +85,14 @@ function getStats() {
           totalByOwner += Number(results[i].count);
         }
       }
-      const totalStations = results.map((result) => Number(result.count)).reduce((total, nextNum) => total + nextNum);
-      document.getElementById("totalStations").innerHTML = `Total Stations: ${totalStations}`;
+      const totalStations = results
+        .map((result) => Number(result.count))
+        .reduce((total, nextNum) => total + nextNum);
+      document.getElementById(
+        "totalStations"
+      ).innerHTML = `Total Stations: ${totalStations}`;
     })
-    .catch((err) => console.log("uh oh"));
+    .catch((err) => console.log("unable to load"));
   getSpotlight();
 }
 

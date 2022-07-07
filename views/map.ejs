@@ -1,6 +1,7 @@
 
    
 <%- include('layout.ejs'); %>
+
     <section class="main-container">
 
         <div id="left-sidebar">
@@ -9,38 +10,60 @@
                 <section class="spotlightDetails">
                     <a href="" id="spotlightLink"></a>
                     <p id="spotOwner"></p>
-                    <a href="">Refresh</a>
+                    <a href=""><i class="fa fa-refresh" aria-hidden="true"></i></a>
                 </section>
             </div>
 
             <div class="stats">
                 <h3>Stats</h3>
                 <p id="totalStations"></p>
-                <h3>Breakdown by Owners</h3>
+                <h3>List of petrol owners in NSW:</h3>
+
+            <div class="tot-owner">
+               
+                
+            </div>
                 <ul id="ownerStats">
+                    
                 </ul>
             </div>
 
-        </div>
+            </div>
 
-        <div id="map"></div>
+            <div id="map"></div>
 
-        <div id="right-sidebar">
-            <h3>Current Location</h3>
+            <div id="right-sidebar">
+                <h3>Current Location</h3>
+                <div class="column">
+            <table>
+                    <tr>
+                    <td>Latitude</td>
+                    <td> <input type="text"></input></td> 
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                    <td><input type="text"></input></td>
+                </tr>
 
-            <input type="text"></input>
-            <input type="text"></input>
+                <tr>
+                    <td>Longitude</td>
+                    <td> <input type="text"></input></td> 
+                </tr>
 
-            <h3>Address: [address goes here] </h3>
+              
 
-        </div>
+            </table>
+            
+
+            </div>
+            <footer>© Copyright 2022 ParisaHeydTech. All rights reserved.</footer>
 
     </section>
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <script src="javascript/map.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyi2xlb_La7r9QJ4SdT9Bju-ZH3kFCtdw&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrLJh5OGOgrGLKTrtEHXlZNIyavYGX6pU&callback=initMap"
         async></script>
 </body>
 
